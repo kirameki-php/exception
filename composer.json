@@ -1,0 +1,38 @@
+{
+  "name": "kirameki/exception",
+  "description": "Exception Handler for PHP",
+  "type": "library",
+  "license": "MIT",
+  "require": {
+    "php": ">=8.1",
+    "psr/log": ">=3"
+  },
+  "require-dev": {
+    "phpstan/phpstan": "^1.7",
+    "phpunit/phpunit": "~9.0",
+    "symfony/var-dumper": "^6"
+  },
+  "autoload": {
+    "psr-4": {
+      "Kirameki\\Exception\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\Kirameki\\Exception\\": "tests/src/"
+    }
+  },
+  "config": {
+    "discard-changes": true,
+    "preferred-install": "dist",
+    "sort-packages": true,
+    "allow-plugins": {
+      "phpstan/extension-installer": true
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "scripts": {
+    "analyze": "vendor/bin/phpstan analyse --memory-limit 1G"
+  }
+}
