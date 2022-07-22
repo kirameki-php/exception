@@ -15,12 +15,12 @@ use function set_exception_handler;
 class ExceptionHandler
 {
     /**
-     * @var array<class-string<Reporter>, Reporter|Closure>
+     * @var array<class-string<Reporter>, Reporter|Closure(): Reporter>
      */
     protected array $reporters;
 
     /**
-     * @var Reporter|Closure(int, string, string, int): Reporter|null
+     * @var Reporter|Closure(): Reporter|null
      */
     protected Reporter|Closure|null $deprecationReporter = null;
 
@@ -52,7 +52,7 @@ class ExceptionHandler
     }
 
     /**
-     * @param Closure(int, string, string, int): Reporter|null $reporter
+     * @param Closure(): Reporter|null $reporter
      * @return void
      */
     public function setDeprecationReporter(?Closure $reporter): void
@@ -134,7 +134,6 @@ class ExceptionHandler
      * @param string $file
      * @param int $line
      * @return bool
-     * @throws ErrorException
      */
     protected function handleDeprecations(int $severity, string $message, string $file, int $line): bool
     {
@@ -143,12 +142,11 @@ class ExceptionHandler
         $reporter = $this->deprecationReporter;
 
         if ($reporter === null) {
-            $this->handleException($error);
-            return true;
+            throw $error;
         }
 
         if ($reporter instanceof Closure) {
-            $this->deprecationReporter = $reporter = $reporter($severity, $message, $file, $line);
+            $this->deprecationReporter = $reporter = $reporter();
         }
 
         $reporter->report($error);
@@ -163,11 +161,11 @@ class ExceptionHandler
     protected function handleException(Throwable $exception): void
     {
         try {
-            foreach ($this->reporters as $name => $processor) {
-                if ($processor instanceof Closure) {
-                    $processor = $this->reporters[$name] = $processor();
+            foreach ($this->reporters as $name => $reporter) {
+                if ($reporter instanceof Closure) {
+                    $reporter = $this->reporters[$name] = $reporter();
                 }
-                $processor->report($exception);
+                $reporter->report($exception);
             }
         }
         catch (Throwable $innerException) {
