@@ -8,6 +8,7 @@
     "psr/log": "^3"
   },
   "require-dev": {
+    "monolog/monolog": "^3",
     "phpstan/phpstan": "^1",
     "phpunit/phpunit": "^9",
     "symfony/var-dumper": "^6"

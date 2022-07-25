@@ -3,7 +3,6 @@
 namespace Kirameki\Exception;
 
 use Closure;
-use ErrorException;
 use Kirameki\Exception\Reporters\Reporter;
 use Throwable;
 use function error_get_last;
@@ -15,7 +14,7 @@ use function set_exception_handler;
 class ExceptionHandler
 {
     /**
-     * @var array<class-string<Reporter>, Reporter|Closure(): Reporter>
+     * @var array<string, Reporter|Closure(): Reporter>
      */
     protected array $reporters;
 
@@ -26,14 +25,14 @@ class ExceptionHandler
 
     public function __construct()
     {
-        $this->setErrorHandling();
         $this->setExceptionHandling();
+        $this->setErrorHandling();
         $this->setFatalHandling();
         $this->reporters = [];
     }
 
     /**
-     * @param class-string<Reporter> $name
+     * @param string $name
      * @param Closure(): Reporter $reporter
      * @return void
      */
@@ -43,7 +42,7 @@ class ExceptionHandler
     }
 
     /**
-     * @param class-string<Reporter> $name
+     * @param string $name
      * @return void
      */
     public function removeReporter(string $name): void
@@ -79,6 +78,16 @@ class ExceptionHandler
     }
 
     /**
+     * @return void
+     */
+    protected function setExceptionHandling(): void
+    {
+        set_exception_handler(function (Throwable $throwable) {
+            $this->handleException($throwable);
+        });
+    }
+
+    /**
      * @throws ErrorException
      * @return void
      */
@@ -92,16 +101,6 @@ class ExceptionHandler
     /**
      * @return void
      */
-    protected function setExceptionHandling(): void
-    {
-        set_exception_handler(function (Throwable $throwable) {
-            $this->handleException($throwable);
-        });
-    }
-
-    /**
-     * @return void
-     */
     protected function setFatalHandling(): void
     {
         register_shutdown_function(function() {
@@ -109,6 +108,30 @@ class ExceptionHandler
                 $this->handleError($err['type'], $err['message'], $err['file'], $err['line']);
             }
         });
+    }
+
+    /**
+     * @param Throwable $exception
+     * @return void
+     */
+    protected function handleException(Throwable $exception): void
+    {
+        if (count($this->reporters) === 0) {
+            $this->fallback($exception);
+            return;
+        }
+
+        try {
+            foreach ($this->reporters as $name => $reporter) {
+                if ($reporter instanceof Closure) {
+                    $reporter = $this->reporters[$name] = $reporter();
+                }
+                $reporter->report($exception);
+            }
+        }
+        catch (Throwable $innerException) {
+            $this->fallback($innerException);
+        }
     }
 
     /**
@@ -153,24 +176,4 @@ class ExceptionHandler
 
         return true;
     }
-
-    /**
-     * @param Throwable $exception
-     * @return void
-     */
-    protected function handleException(Throwable $exception): void
-    {
-        try {
-            foreach ($this->reporters as $name => $reporter) {
-                if ($reporter instanceof Closure) {
-                    $reporter = $this->reporters[$name] = $reporter();
-                }
-                $reporter->report($exception);
-            }
-        }
-        catch (Throwable $innerException) {
-            $this->fallback($innerException);
-        }
-    }
-
 }
