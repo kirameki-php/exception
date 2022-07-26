@@ -8,3 +8,6 @@ vendor
 
 # PHPUnit
 .phpunit.result.cache
+
+# IDE
+.idea/workspace.xml
