@@ -8,7 +8,6 @@ use RuntimeException;
 use const E_ERROR;
 use const E_USER_DEPRECATED;
 use const E_USER_ERROR;
-use const E_WARNING;
 
 class ExceptionHandlerTest extends TestCase
 {

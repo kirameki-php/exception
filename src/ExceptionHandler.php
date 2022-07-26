@@ -6,7 +6,6 @@ use Closure;
 use Kirameki\Exception\Reporters\Reporter;
 use Throwable;
 use function error_get_last;
-use function error_log;
 use function register_shutdown_function;
 use function set_error_handler;
 use function set_exception_handler;
@@ -24,11 +23,6 @@ class ExceptionHandler
      * @var Reporter|Closure(): Reporter|null
      */
     protected Reporter|Closure|null $deprecationReporter = null;
-
-    /**
-     * @var Closure(Throwable): void|null
-     */
-    protected ?Closure $fallback = null;
 
     /**
      * @param array<string, Reporter|Closure(): Reporter> $reporters
@@ -71,33 +65,12 @@ class ExceptionHandler
     }
 
     /**
-     * @param Closure(Throwable): void|null $closure
-     * @return void
-     */
-    public function setFallback(?Closure $closure): void
-    {
-        $this->fallback = $closure;
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    protected function context(): array
-    {
-        return [];
-    }
-
-    /**
      * @param Throwable $exception
      * @return void
      */
     protected function fallback(Throwable $exception): void
     {
-        if ($this->fallback !== null) {
-            ($this->fallback)($exception);
-        } else {
-            throw $exception;
-        }
+        throw $exception;
     }
 
     /**
