@@ -5,17 +5,21 @@ namespace Tests\Kirameki\Exception;
 use Kirameki\Exception\ErrorException;
 use Monolog\Level;
 use RuntimeException;
+use const E_ERROR;
+use const E_USER_DEPRECATED;
+use const E_USER_ERROR;
+use const E_WARNING;
 
 class ExceptionHandlerTest extends TestCase
 {
     protected function runScript(string $file): mixed
     {
-        $output = shell_exec("php tests/src/Support/runner.php tests/src/Support/$file");
+        $output = shell_exec("php tests/src/Support/{$file}.php");
         assert(is_string($output));
-        return json_decode($output, true, JSON_THROW_ON_ERROR);
+        return json_decode($output, true, 512, JSON_THROW_ON_ERROR);
     }
 
-    public function testException(): void
+    public function test_exception_handling(): void
     {
         $output = $this->runScript('exception');
 
@@ -27,12 +31,12 @@ class ExceptionHandlerTest extends TestCase
                 'class' => RuntimeException::class,
                 'message' => $output['message'],
                 'code' => 0,
-                'file' => '/app/tests/src/Support/exception.php:3',
+                'file' => '/app/tests/src/Support/exception.php:5',
             ],
         ], $output['context']);
     }
 
-    public function testError(): void
+    public function test_error_handling(): void
     {
         $output = $this->runScript('error');
 
@@ -44,10 +48,63 @@ class ExceptionHandlerTest extends TestCase
                 'class' => ErrorException::class,
                 'message' => $output['message'],
                 'code' => 0,
-                'file' => '/app/tests/src/Support/error.php:3',
-                'severity' => E_USER_NOTICE,
+                'file' => '/app/tests/src/Support/error.php:5',
+                'severity' => E_USER_ERROR,
             ],
         ], $output['context']);
     }
 
+    public function test_fatal_handling(): void
+    {
+        $output = $this->runScript('fatal');
+
+        self::assertSame('Allowed memory size of 10485760 bytes exhausted (tried to allocate 15000032 bytes)', $output['message']);
+        self::assertSame(Level::Error->value, $output['level']);
+        self::assertSame('testing channel', $output['channel']);
+        self::assertSame([
+            'exception' => [
+                'class' => ErrorException::class,
+                'message' => $output['message'],
+                'code' => 0,
+                'file' => '/app/tests/src/Support/fatal.php:6',
+                'severity' => E_ERROR,
+            ],
+        ], $output['context']);
+    }
+
+    public function test_deprecation(): void
+    {
+        $output = $this->runScript('deprecation');
+
+        self::assertSame('test deprecation', $output['message']);
+        self::assertSame(Level::Error->value, $output['level']);
+        self::assertSame('testing channel', $output['channel']);
+        self::assertSame([
+            'exception' => [
+                'class' => ErrorException::class,
+                'message' => $output['message'],
+                'code' => 0,
+                'file' => '/app/tests/src/Support/deprecation.php:5',
+                'severity' => E_USER_DEPRECATED,
+            ],
+        ], $output['context']);
+    }
+
+    public function test_deprecation_custom(): void
+    {
+        $output = $this->runScript('deprecation_custom');
+
+        self::assertSame('test deprecation', $output['message']);
+        self::assertSame(Level::Error->value, $output['level']);
+        self::assertSame('deprecated channel', $output['channel']);
+        self::assertSame([
+            'exception' => [
+                'class' => ErrorException::class,
+                'message' => $output['message'],
+                'code' => 0,
+                'file' => '/app/tests/src/Support/deprecation_custom.php:18',
+                'severity' => E_USER_DEPRECATED,
+            ],
+        ], $output['context']);
+    }
 }

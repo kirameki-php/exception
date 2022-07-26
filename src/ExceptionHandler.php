@@ -10,6 +10,8 @@ use function error_log;
 use function register_shutdown_function;
 use function set_error_handler;
 use function set_exception_handler;
+use const E_DEPRECATED;
+use const E_USER_DEPRECATED;
 
 class ExceptionHandler
 {
@@ -23,12 +25,17 @@ class ExceptionHandler
      */
     protected Reporter|Closure|null $deprecationReporter = null;
 
-    public function __construct()
+    /**
+     * @param array<string, Reporter|Closure(): Reporter> $reporters
+     */
+    public function __construct(array $reporters = [])
     {
+        ini_set('display_errors', 'off');
+        error_reporting(-1);
         $this->setExceptionHandling();
         $this->setErrorHandling();
         $this->setFatalHandling();
-        $this->reporters = [];
+        $this->reporters = $reporters;
     }
 
     /**
@@ -51,10 +58,10 @@ class ExceptionHandler
     }
 
     /**
-     * @param Closure(): Reporter|null $reporter
+     * @param Reporter|Closure(): Reporter|null $reporter
      * @return void
      */
-    public function setDeprecationReporter(?Closure $reporter): void
+    public function setDeprecationReporter(Reporter|Closure|null $reporter): void
     {
         $this->deprecationReporter = $reporter;
     }
@@ -105,7 +112,8 @@ class ExceptionHandler
     {
         register_shutdown_function(function() {
             if($err = error_get_last()) {
-                $this->handleError($err['type'], $err['message'], $err['file'], $err['line']);
+                $exception = new ErrorException($err['message'], 0, $err['type'], $err['file'], $err['line']);
+                $this->handleException($exception);
             }
         });
     }
@@ -164,6 +172,7 @@ class ExceptionHandler
 
         $reporter = $this->deprecationReporter;
 
+        // If no reporter for deprecation is set, throw and treat it as normal exception.
         if ($reporter === null) {
             throw $error;
         }

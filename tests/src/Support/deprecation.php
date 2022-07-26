@@ -2,4 +2,4 @@
 
 require 'setup.php';
 
-throw new RuntimeException('test exception');
+trigger_error('test deprecation', E_USER_DEPRECATED);

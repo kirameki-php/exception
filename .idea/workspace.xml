@@ -5,17 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="aa298324-2060-4820-853f-5fe0a69ba817" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/ErrorException.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Reporters/ArrayReporter.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/src/ExceptionHandlerTest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/src/Support/error.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/src/Support/exception.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/src/Support/runner.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/exception.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/exception.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/src/Support/deprecation.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/src/Support/deprecation_custom.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/src/Support/fatal.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/src/Support/setup.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ExceptionHandler.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/ExceptionHandler.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/src/ExceptionHandlerTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/src/ExceptionHandlerTest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/src/Support/error.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/src/Support/error.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/src/Support/exception.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/src/Support/exception.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/src/Support/runner.php" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -87,7 +86,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "/Users/taka-mac/Projects/kirameki/exception/src",
+    "last_opened_file_path": "/Users/taka-mac/Projects/kirameki/exception/tests/src/Support",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -97,8 +96,8 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src" />
       <recent name="$PROJECT_DIR$/tests/src/Support" />
+      <recent name="$PROJECT_DIR$/src" />
       <recent name="$PROJECT_DIR$/tests/src" />
     </key>
   </component>
@@ -122,6 +121,7 @@
       <workItem from="1658154868420" duration="4577000" />
       <workItem from="1658212124566" duration="651000" />
       <workItem from="1658233210838" duration="1026000" />
+      <workItem from="1658838722689" duration="6655000" />
     </task>
     <servers />
   </component>
