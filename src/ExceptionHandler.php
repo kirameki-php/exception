@@ -147,28 +147,24 @@ class ExceptionHandler
      * @param string $file
      * @param int $line
      * @return bool
-     * @throws ErrorException
      */
     protected function handleError(int $severity, string $message, string $file, int $line): bool
     {
+        $error = new ErrorException($message, 0, $severity, $file, $line);
+
         return match($severity) {
             E_DEPRECATED,
-            E_USER_DEPRECATED => $this->handleDeprecations($severity, $message, $file, $line),
-            default => throw new ErrorException($message, 0, $severity, $file, $line),
+            E_USER_DEPRECATED => $this->handleDeprecations($error),
+            default => throw $error,
         };
     }
 
     /**
-     * @param int $severity
-     * @param string $message
-     * @param string $file
-     * @param int $line
+     * @param ErrorException $error
      * @return bool
      */
-    protected function handleDeprecations(int $severity, string $message, string $file, int $line): bool
+    protected function handleDeprecations(ErrorException $error): bool
     {
-        $error = new ErrorException($message, 0, $severity, $file, $line);
-
         $reporter = $this->deprecationReporter;
 
         // If no reporter for deprecation is set, throw and treat it as normal exception.

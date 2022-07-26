@@ -52,6 +52,9 @@ class ExceptionHandlerTest extends TestCase
                 'severity' => E_USER_ERROR,
             ],
         ], $output['context']);
+
+        $file = '/tmp/error.txt';
+        self::assertFileDoesNotExist($file);
     }
 
     public function test_fatal_handling(): void
@@ -70,6 +73,9 @@ class ExceptionHandlerTest extends TestCase
                 'severity' => E_ERROR,
             ],
         ], $output['context']);
+
+        $file = '/tmp/fatal.txt';
+        self::assertFileDoesNotExist($file);
     }
 
     public function test_deprecation(): void
@@ -88,6 +94,9 @@ class ExceptionHandlerTest extends TestCase
                 'severity' => E_USER_DEPRECATED,
             ],
         ], $output['context']);
+
+        $file = '/tmp/deprecation.txt';
+        self::assertFileDoesNotExist($file);
     }
 
     public function test_deprecation_custom(): void
@@ -106,5 +115,9 @@ class ExceptionHandlerTest extends TestCase
                 'severity' => E_USER_DEPRECATED,
             ],
         ], $output['context']);
+
+        $file = '/tmp/deprecation_custom.txt';
+        self::assertFileExists($file);
+        unlink($file);
     }
 }

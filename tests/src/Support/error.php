@@ -3,3 +3,5 @@
 require 'setup.php';
 
 trigger_error('test error', E_USER_ERROR);
+
+file_put_contents('/tmp/error.txt', '1');
