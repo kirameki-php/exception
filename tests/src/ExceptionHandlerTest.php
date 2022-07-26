@@ -66,7 +66,7 @@ class ExceptionHandlerTest extends TestCase
                 'class' => ErrorException::class,
                 'message' => $output['message'],
                 'code' => 0,
-                'file' => '/app/tests/src/Support/fatal.php:6',
+                'file' => '/app/tests/src/Support/fatal.php:7',
                 'severity' => E_ERROR,
             ],
         ], $output['context']);

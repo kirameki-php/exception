@@ -30,7 +30,6 @@ class ExceptionHandler
      */
     public function __construct(array $reporters = [])
     {
-        ini_set('display_errors', 'off');
         error_reporting(-1);
         $this->setExceptionHandling();
         $this->setErrorHandling();
