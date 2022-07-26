@@ -15,25 +15,18 @@ use const E_USER_DEPRECATED;
 class ExceptionHandler
 {
     /**
-     * @var array<string, Reporter|Closure(): Reporter>
-     */
-    protected array $reporters;
-
-    /**
-     * @var Reporter|Closure(): Reporter|null
-     */
-    protected Reporter|Closure|null $deprecationReporter = null;
-
-    /**
      * @param array<string, Reporter|Closure(): Reporter> $reporters
+     * @param Reporter|Closure(): Reporter|null $deprecationReporter
      */
-    public function __construct(array $reporters = [])
+    public function __construct(
+        protected array $reporters = [],
+        protected Reporter|Closure|null $deprecationReporter = null,
+    )
     {
         error_reporting(-1);
         $this->setExceptionHandling();
         $this->setErrorHandling();
         $this->setFatalHandling();
-        $this->reporters = $reporters;
     }
 
     /**
