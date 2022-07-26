@@ -7,6 +7,9 @@
         <include>
             <directory suffix=".php">./src</directory>
         </include>
+        <exclude>
+            <file>src/ExceptionHandler.php</file>
+        </exclude>
     </coverage>
     <testsuites>
         <testsuite name="default">
