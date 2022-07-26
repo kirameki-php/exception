@@ -120,4 +120,12 @@ class ExceptionHandlerTest extends TestCase
         self::assertFileExists($file);
         unlink($file);
     }
+
+    public function test_fallback(): void
+    {
+        $output = shell_exec("php tests/src/Support/fallback.php");
+        assert(is_string($output));
+        $expected = 'Fatal error: Uncaught ' . ErrorException::class . ': Uncaught RuntimeException: fallback';
+        self::assertStringContainsString($expected, $output);
+    }
 }

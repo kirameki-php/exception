@@ -26,6 +26,11 @@ class ExceptionHandler
     protected Reporter|Closure|null $deprecationReporter = null;
 
     /**
+     * @var Closure(Throwable): void|null
+     */
+    protected ?Closure $fallback = null;
+
+    /**
      * @param array<string, Reporter|Closure(): Reporter> $reporters
      */
     public function __construct(array $reporters = [])
@@ -66,6 +71,15 @@ class ExceptionHandler
     }
 
     /**
+     * @param Closure(Throwable): void|null $closure
+     * @return void
+     */
+    public function setFallback(?Closure $closure): void
+    {
+        $this->fallback = $closure;
+    }
+
+    /**
      * @return array<string, mixed>
      */
     protected function context(): array
@@ -79,8 +93,11 @@ class ExceptionHandler
      */
     protected function fallback(Throwable $exception): void
     {
-        /** @noinspection ForgottenDebugOutputInspection */
-        error_log((string) $exception);
+        if ($this->fallback !== null) {
+            ($this->fallback)($exception);
+        } else {
+            throw $exception;
+        }
     }
 
     /**
@@ -123,17 +140,18 @@ class ExceptionHandler
      */
     protected function handleException(Throwable $exception): void
     {
-        if (count($this->reporters) === 0) {
-            $this->fallback($exception);
-            return;
-        }
-
         try {
+            $reported = false;
             foreach ($this->reporters as $name => $reporter) {
                 if ($reporter instanceof Closure) {
                     $reporter = $this->reporters[$name] = $reporter();
                 }
                 $reporter->report($exception);
+                $reported = true;
+            }
+
+            if (!$reported) {
+                $this->fallback($exception);
             }
         }
         catch (Throwable $innerException) {
