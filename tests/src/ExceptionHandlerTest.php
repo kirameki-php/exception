@@ -110,7 +110,7 @@ class ExceptionHandlerTest extends TestCase
                 'class' => ErrorException::class,
                 'message' => $output['message'],
                 'code' => 0,
-                'file' => '/app/tests/src/Support/deprecation_custom.php:18',
+                'file' => '/app/tests/src/Support/deprecation_custom.php:17',
                 'severity' => E_USER_DEPRECATED,
             ],
         ], $output['context']);

@@ -30,23 +30,6 @@ class ExceptionHandler
     }
 
     /**
-     * @param Reporter|Closure(): Reporter $reporter
-     * @return void
-     */
-    public function setDeprecationReporter(Reporter|Closure $reporter): void
-    {
-        $this->deprecationReporter = $reporter;
-    }
-
-    /**
-     * @return void
-     */
-    public function removeDeprecationReporter(): void
-    {
-        $this->deprecationReporter = null;
-    }
-
-    /**
      * @return void
      */
     protected function setExceptionHandling(): void
@@ -57,7 +40,6 @@ class ExceptionHandler
     }
 
     /**
-     * @throws ErrorException
      * @return void
      */
     protected function setErrorHandling(): void
@@ -73,8 +55,8 @@ class ExceptionHandler
     protected function setFatalHandling(): void
     {
         register_shutdown_function(function() {
-            if($err = error_get_last()) {
-                $exception = new ErrorException($err['message'], 0, $err['type'], $err['file'], $err['line']);
+            if($e = error_get_last()) {
+                $exception = new ErrorException($e['message'], 0, $e['type'], $e['file'], $e['line']);
                 $this->handleException($exception);
             }
         });
