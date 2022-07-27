@@ -49,21 +49,20 @@ class ExceptionHandler
     }
 
     /**
-     * @param Reporter|Closure(): Reporter|null $reporter
+     * @param Reporter|Closure(): Reporter $reporter
      * @return void
      */
-    public function setDeprecationReporter(Reporter|Closure|null $reporter): void
+    public function setDeprecationReporter(Reporter|Closure $reporter): void
     {
         $this->deprecationReporter = $reporter;
     }
 
     /**
-     * @param Throwable $exception
      * @return void
      */
-    protected function fallback(Throwable $exception): void
+    public function removeDeprecationReporter(): void
     {
-        throw $exception;
+        $this->deprecationReporter = null;
     }
 
     /**
@@ -163,5 +162,14 @@ class ExceptionHandler
         $reporter->report($error);
 
         return true;
+    }
+
+    /**
+     * @param Throwable $exception
+     * @return void
+     */
+    protected function fallback(Throwable $exception): void
+    {
+        throw $exception;
     }
 }
