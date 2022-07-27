@@ -12,6 +12,4 @@ $logger = new Logger('testing channel', [
     (new StreamHandler('php://stdout'))->setFormatter(new JsonFormatter()),
 ]);
 
-return new ExceptionHandler([
-    'default' => new LogReporter($logger),
-]);
+return new ExceptionHandler(new LogReporter($logger));

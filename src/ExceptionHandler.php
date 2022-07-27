@@ -15,11 +15,11 @@ use const E_USER_DEPRECATED;
 class ExceptionHandler
 {
     /**
-     * @param array<string, Reporter|Closure(): Reporter> $reporters
+     * @param Reporter|Closure(): Reporter|null $reporter
      * @param Reporter|Closure(): Reporter|null $deprecationReporter
      */
     public function __construct(
-        protected array $reporters = [],
+        protected Reporter|Closure|null $reporter = null,
         protected Reporter|Closure|null $deprecationReporter = null,
     )
     {
@@ -27,25 +27,6 @@ class ExceptionHandler
         $this->setExceptionHandling();
         $this->setErrorHandling();
         $this->setFatalHandling();
-    }
-
-    /**
-     * @param string $name
-     * @param Closure(): Reporter $reporter
-     * @return void
-     */
-    public function setReporter(string $name, Closure $reporter): void
-    {
-        $this->reporters[$name] = $reporter;
-    }
-
-    /**
-     * @param string $name
-     * @return void
-     */
-    public function removeReporter(string $name): void
-    {
-        unset($this->reporters[$name]);
     }
 
     /**
@@ -100,27 +81,46 @@ class ExceptionHandler
     }
 
     /**
+     * @return Reporter|null
+     */
+    protected function resolveReporter(): ?Reporter
+    {
+        $reporter = $this->reporter;
+        if ($reporter instanceof Closure) {
+            return $this->reporter = $reporter();
+        }
+        return $reporter;
+    }
+
+    /**
+     * @return Reporter|null
+     */
+    protected function resolveDeprecationReporter(): ?Reporter
+    {
+        $reporter = $this->deprecationReporter;
+        if ($reporter instanceof Closure) {
+            return $this->deprecationReporter = $reporter();
+        }
+        return $reporter;
+    }
+
+    /**
      * @param Throwable $exception
      * @return void
      */
     protected function handleException(Throwable $exception): void
     {
-        try {
-            $reported = false;
-            foreach ($this->reporters as $name => $reporter) {
-                if ($reporter instanceof Closure) {
-                    $reporter = $this->reporters[$name] = $reporter();
-                }
-                $reporter->report($exception);
-                $reported = true;
-            }
+        $reporter = $this->resolveReporter();
 
-            if (!$reported) {
-                $this->fallback($exception);
+        if ($reporter !== null) {
+            try {
+                $reporter->report($exception);
             }
-        }
-        catch (Throwable $innerException) {
-            $this->fallback($innerException);
+            catch (Throwable $innerException) {
+                $this->fallback($innerException);
+            }
+        } else {
+            $this->fallback($exception);
         }
     }
 
@@ -135,33 +135,14 @@ class ExceptionHandler
     {
         $error = new ErrorException($message, 0, $severity, $file, $line);
 
-        return match($severity) {
-            E_DEPRECATED,
-            E_USER_DEPRECATED => $this->handleDeprecations($error),
-            default => throw $error,
-        };
-    }
-
-    /**
-     * @param ErrorException $error
-     * @return bool
-     */
-    protected function handleDeprecations(ErrorException $error): bool
-    {
-        $reporter = $this->deprecationReporter;
-
-        // If no reporter for deprecation is set, throw and treat it as normal exception.
-        if ($reporter === null) {
-            throw $error;
+        if (in_array($severity, [E_DEPRECATED, E_USER_DEPRECATED])) {
+            if ($reporter = $this->resolveDeprecationReporter()) {
+                $reporter->report($error);
+                return true;
+            }
         }
 
-        if ($reporter instanceof Closure) {
-            $this->deprecationReporter = $reporter = $reporter();
-        }
-
-        $reporter->report($error);
-
-        return true;
+        throw $error;
     }
 
     /**
