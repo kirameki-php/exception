@@ -85,11 +85,10 @@ class ExceptionHandler
      */
     protected function resolveReporter(): ?Reporter
     {
-        $reporter = $this->reporter;
-        if ($reporter instanceof Closure) {
-            return $this->reporter = $reporter();
+        if ($this->reporter instanceof Closure) {
+            $this->reporter = ($this->reporter)();
         }
-        return $reporter;
+        return $this->reporter;
     }
 
     /**
@@ -97,11 +96,10 @@ class ExceptionHandler
      */
     protected function resolveDeprecationReporter(): ?Reporter
     {
-        $reporter = $this->deprecationReporter;
-        if ($reporter instanceof Closure) {
-            return $this->deprecationReporter = $reporter();
+        if ($this->deprecationReporter instanceof Closure) {
+            $this->deprecationReporter = ($this->deprecationReporter)();
         }
-        return $reporter;
+        return $this->deprecationReporter;
     }
 
     /**
