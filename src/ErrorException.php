@@ -7,7 +7,10 @@ use JsonSerializable;
 
 class ErrorException extends Base implements JsonSerializable
 {
-    public function jsonSerialize(): mixed
+    /**
+     * @return array{ class: string, message: string, code: int, file: string, severity: int }
+     */
+    public function jsonSerialize(): array
     {
         return [
             'class' => $this::class,
