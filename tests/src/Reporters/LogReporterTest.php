@@ -15,8 +15,7 @@ class LogReporterTest extends TestCase
         $tmpFile = tmpfile();
         assert(is_resource($tmpFile));
 
-        $handler = new StreamHandler($tmpFile);
-        $logger = new Logger('test', [$handler]);
+        $logger = new Logger('test', [new StreamHandler($tmpFile)]);
         $reporter = new LogReporter($logger);
         $reporter->report(new RuntimeException('<test report>'));
 

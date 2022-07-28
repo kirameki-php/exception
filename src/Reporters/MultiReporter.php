@@ -5,7 +5,7 @@ namespace Kirameki\Exception\Reporters;
 use Closure;
 use Throwable;
 
-class AggregateReporter implements Reporter
+class MultiReporter implements Reporter
 {
     /**
      * @param array<Reporter|Closure(): Reporter> $reporters
