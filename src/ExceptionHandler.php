@@ -10,7 +10,6 @@ use function register_shutdown_function;
 use function set_error_handler;
 use function set_exception_handler;
 use const E_DEPRECATED;
-use const E_ERROR;
 use const E_USER_DEPRECATED;
 
 class ExceptionHandler
