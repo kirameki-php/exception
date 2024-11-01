@@ -13,7 +13,7 @@ class ExceptionHandlerTest extends TestCase
 {
     protected function runScript(string $file): mixed
     {
-        $output = shell_exec("php tests/src/Support/{$file}.php");
+        $output = shell_exec("php tests/src/Support/{$file}.php 2>/dev/null");
         assert(is_string($output));
         return json_decode($output, true, 512, JSON_THROW_ON_ERROR);
     }
@@ -122,9 +122,9 @@ class ExceptionHandlerTest extends TestCase
 
     public function test_fallback(): void
     {
-        $output = shell_exec("php tests/src/Support/fallback.php");
+        $output = shell_exec("php tests/src/Support/fallback.php 2>&1");
         assert(is_string($output));
-        $expected = 'Fatal error: Uncaught ' . ErrorException::class . ': Uncaught RuntimeException: fallback';
+        $expected = 'Fatal error:  Uncaught ' . ErrorException::class . ': Uncaught RuntimeException: fallback';
         self::assertStringContainsString($expected, $output);
     }
 }
