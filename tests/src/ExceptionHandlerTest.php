@@ -8,6 +8,7 @@ use RuntimeException;
 use const E_ERROR;
 use const E_USER_DEPRECATED;
 use const E_USER_ERROR;
+use const E_USER_NOTICE;
 
 class ExceptionHandlerTest extends TestCase
 {
@@ -48,7 +49,7 @@ class ExceptionHandlerTest extends TestCase
                 'message' => $output['message'],
                 'code' => 0,
                 'file' => '/app/tests/src/Support/error.php:5',
-                'severity' => E_USER_ERROR,
+                'severity' => E_USER_NOTICE,
             ],
         ], $output['context']);
 
