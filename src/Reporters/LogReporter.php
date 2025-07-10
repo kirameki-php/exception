@@ -7,10 +7,12 @@ use Throwable;
 
 class LogReporter implements Reporter
 {
+    /**
+     * @param LoggerInterface $logger
+     */
     public function __construct(
         protected LoggerInterface $logger,
-    )
-    {
+    ) {
     }
 
     /**

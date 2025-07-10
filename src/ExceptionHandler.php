@@ -68,7 +68,7 @@ class ExceptionHandler
     protected function resolveReporter(): ?Reporter
     {
         if ($this->reporter instanceof Closure) {
-            $this->reporter = ($this->reporter)();
+            return $this->reporter = ($this->reporter)();
         }
         return $this->reporter;
     }
@@ -79,7 +79,7 @@ class ExceptionHandler
     protected function resolveDeprecationReporter(): ?Reporter
     {
         if ($this->deprecationReporter instanceof Closure) {
-            $this->deprecationReporter = ($this->deprecationReporter)();
+            return $this->deprecationReporter = ($this->deprecationReporter)();
         }
         return $this->deprecationReporter;
     }

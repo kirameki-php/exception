@@ -10,8 +10,9 @@ class MultiReporter implements Reporter
     /**
      * @param array<Reporter|Closure(): Reporter> $reporters
      */
-    public function __construct(protected array $reporters)
-    {
+    public function __construct(
+        protected array $reporters,
+    ) {
     }
 
     /**

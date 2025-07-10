@@ -4,14 +4,14 @@
   "type": "library",
   "license": "MIT",
   "require": {
-    "php": ">=8.1",
+    "php": ">=8.3",
     "psr/log": "^3"
   },
   "require-dev": {
+    "kirameki/dumper": "dev-main",
     "monolog/monolog": "^3",
     "phpstan/phpstan": "^2",
-    "phpunit/phpunit": "^11",
-    "symfony/var-dumper": "^6"
+    "phpunit/phpunit": "^12"
   },
   "replace": {
     "symfony/polyfill-mbstring": "*"
